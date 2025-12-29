@@ -32,16 +32,12 @@ async function buildChrome() {
     exec('cp -r dist/src dist-chrome/', 'Copying bundled scripts');
     exec('cp -r icons dist-chrome/', 'Copying icons');
 
-    // Modify manifest for Chrome: add activeTab permission
-    console.log('\nAdding Chrome-specific permissions...');
+    // Modify manifest for Chrome: remove Firefox-specific settings
+    console.log('\nProcessing manifest for Chrome...');
     const manifest = JSON.parse(fs.readFileSync('manifest.json', 'utf8'));
-    if (!manifest.permissions.includes('activeTab')) {
-      manifest.permissions.push('activeTab');
-    }
-    // Remove Firefox-specific settings
     delete manifest.browser_specific_settings;
     fs.writeFileSync('dist-chrome/manifest.json', JSON.stringify(manifest, null, 2));
-    console.log('✓ Chrome manifest created with activeTab permission');
+    console.log('✓ Chrome manifest created');
 
     exec('rm -f extension-chrome.zip', 'Cleaning old package');
     exec('cd dist-chrome && zip -r ../extension-chrome.zip *', 'Creating Chrome zip');
