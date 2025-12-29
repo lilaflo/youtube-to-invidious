@@ -25,7 +25,7 @@ async function buildFirefox() {
     exec('mkdir -p dist-firefox', 'Creating Firefox dist directory');
     exec('cp -r src dist-firefox/', 'Copying source files');
     exec('cp -r icons dist-firefox/', 'Copying icons');
-    exec('cp manifest.firefox.json dist-firefox/manifest.json', 'Copying Firefox manifest');
+    exec('cp manifest.json dist-firefox/', 'Copying manifest');
     exec('rm -f extension-firefox.zip', 'Cleaning old package');
     exec('cd dist-firefox && zip -r ../extension-firefox.zip *', 'Creating Firefox zip');
 
