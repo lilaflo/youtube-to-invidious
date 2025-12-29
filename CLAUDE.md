@@ -60,13 +60,16 @@ Maintain a list of public Invidious instances with fallback options. Consider:
 
 ## Cross-Browser Compatibility
 
-**Supported Browsers**: Chrome (Manifest v3) and Firefox (Manifest v2)
+**Supported Browsers**: Chrome and Firefox (both use Manifest v3)
 
 **Build System**:
 - Separate manifest files: `manifest.chrome.json` and `manifest.firefox.json`
-- Build script (`scripts/build.js`) creates browser-specific distributions
-- Chrome uses Manifest v3 with service workers
-- Firefox uses Manifest v2 with browser_specific_settings
+- Both browsers use Manifest v3 (modern versions only)
+- Firefox manifest includes `browser_specific_settings` with gecko ID
+- Build scripts in `scripts/` directory:
+  - `build.js` - Builds both browsers
+  - `build-chrome.js` - Chrome only
+  - `build-firefox.js` - Firefox only
 - `webextension-polyfill` installed for cross-browser API compatibility
 
 ## Testing
