@@ -84,7 +84,7 @@ Tests run automatically:
 ## Browser Support
 
 - ✅ **Chrome/Chromium** - Manifest v3
-- ✅ **Firefox** - Manifest v2 with browser_specific_settings
+- ✅ **Firefox** - Manifest v3 (modern versions)
 
 ## Future Plans
 
