@@ -28,38 +28,20 @@ async function build() {
 
     console.log(`\nBuilding version ${version}...`);
 
-    // Bundle JavaScript
-    console.log('\n=== Bundling JavaScript ===');
-    exec('mkdir -p dist/src', 'Creating dist directory');
-    exec('node scripts/bundle-content.js', 'Bundling content script');
-    exec('cp src/options.js dist/src/', 'Copying options script');
-    exec('cp src/options.html dist/src/', 'Copying options HTML');
-
-    // Build Chrome version
+    // Build Chrome version (includes signing if privatekey.pem exists)
     console.log('\n=== Building Chrome version ===');
-    exec('rm -rf dist-chrome', 'Cleaning Chrome distribution directory');
-    exec('mkdir -p dist-chrome', 'Creating Chrome dist directory');
-    exec('cp -r dist/src dist-chrome/', 'Copying bundled scripts');
-    exec('cp -r icons dist-chrome/', 'Copying icons');
-    exec('cp manifest.json dist-chrome/', 'Copying manifest');
+    exec('node scripts/build-chrome.js', 'Building Chrome extension');
 
     // Build Firefox version
     console.log('\n=== Building Firefox version ===');
-    exec('rm -rf dist-firefox', 'Cleaning Firefox distribution directory');
-    exec('mkdir -p dist-firefox', 'Creating Firefox dist directory');
-    exec('cp -r dist/src dist-firefox/', 'Copying bundled scripts');
-    exec('cp -r icons dist-firefox/', 'Copying icons');
-    exec('cp manifest.json dist-firefox/', 'Copying manifest');
-
-    // Create zip files
-    console.log('\n=== Creating distribution packages ===');
-    exec('rm -f extension-chrome.zip extension-firefox.zip', 'Cleaning old packages');
-    exec('cd dist-chrome && zip -r ../extension-chrome.zip *', 'Creating Chrome zip');
-    exec('cd dist-firefox && zip -r ../extension-firefox.zip *', 'Creating Firefox zip');
+    exec('node scripts/build-firefox.js', 'Building Firefox extension');
 
     console.log('\n✓ Build completed successfully!');
     console.log(`\nDeployment packages created:`);
-    console.log(`  - extension-chrome.zip (for Chrome Web Store)`);
+    console.log(`  - extension-chrome.zip (unsigned, for Chrome Web Store)`);
+    if (fs.existsSync('extension-chrome.crx')) {
+      console.log(`  - extension-chrome.crx (signed, for verified CRX upload)`);
+    }
     console.log(`  - extension-firefox.zip (for Firefox Add-ons)`);
     console.log(`\nVersion: ${version}`);
   } catch (error) {
