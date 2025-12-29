@@ -9,12 +9,7 @@ const INVIDIOUS_INSTANCE = 'https://yewtu.be';
 let processedIframes = new Set();
 
 // Debug logging state
-let debugEnabled = true; // Default to true until we load from storage
-
-// Load debug preference from storage
-chrome.storage.sync.get(['debugEnabled'], (result) => {
-  debugEnabled = result.debugEnabled !== false; // Default to true
-});
+let debugEnabled = true; // Default to true
 
 // Debug logging function
 function debug(...args) {
@@ -22,6 +17,24 @@ function debug(...args) {
     console.debug(...args);
   }
 }
+
+// Load debug preference from storage
+function loadDebugSetting() {
+  return new Promise((resolve) => {
+    chrome.storage.sync.get(['debugEnabled'], (result) => {
+      debugEnabled = result.debugEnabled !== false; // Default to true
+      resolve(debugEnabled);
+    });
+  });
+}
+
+// Listen for storage changes
+chrome.storage.onChanged.addListener((changes, namespace) => {
+  if (namespace === 'sync' && changes.debugEnabled) {
+    debugEnabled = changes.debugEnabled.newValue;
+    console.log('[YT2INV] Debug logging changed to:', debugEnabled);
+  }
+});
 
 /**
  * Extract video ID from YouTube URL
@@ -213,7 +226,10 @@ function createFloatingButton(iframe, videoId) {
 /**
  * Initialize extension
  */
-function init() {
+async function init() {
+  // Load debug setting first
+  await loadDebugSetting();
+
   debug('[YT2INV] ========================================');
   debug('[YT2INV] 🚀 YouTube to Invidious extension STARTED');
   debug('[YT2INV] 🌐 Current hostname:', window.location.hostname);
