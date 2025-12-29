@@ -42,8 +42,39 @@ async function buildChrome() {
     exec('rm -f extension-chrome.zip', 'Cleaning old package');
     exec('cd dist-chrome && zip -r ../extension-chrome.zip *', 'Creating Chrome zip');
 
+    // Sign extension if private key exists
+    if (fs.existsSync('privatekey.pem')) {
+      console.log('\n=== Signing extension ===');
+      const chromePath = process.platform === 'darwin'
+        ? '/Applications/Google\\ Chrome.app/Contents/MacOS/Google\\ Chrome'
+        : 'google-chrome';
+
+      try {
+        exec(
+          `${chromePath} --pack-extension=dist-chrome --pack-extension-key=privatekey.pem`,
+          'Signing extension with private key'
+        );
+
+        // Move the generated CRX file
+        if (fs.existsSync('dist-chrome.crx')) {
+          exec('rm -f extension-chrome.crx', 'Cleaning old CRX');
+          fs.renameSync('dist-chrome.crx', 'extension-chrome.crx');
+          console.log('✓ Signed CRX created: extension-chrome.crx');
+        }
+      } catch (error) {
+        console.warn('⚠ Signing failed, continuing without signed package');
+      }
+    } else {
+      console.log('\n⚠ Skipping signing - privatekey.pem not found');
+      console.log('Generate a key: openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:2048 -out privatekey.pem');
+    }
+
     console.log('\n✓ Chrome build completed successfully!');
-    console.log(`\nPackage: extension-chrome.zip`);
+    console.log(`\nPackages created:`);
+    console.log(`  - extension-chrome.zip (unsigned, for manual upload)`);
+    if (fs.existsSync('extension-chrome.crx')) {
+      console.log(`  - extension-chrome.crx (signed, for verified CRX upload)`);
+    }
     console.log(`Version: ${version}`);
   } catch (error) {
     console.error('\n✗ Chrome build failed:', error.message);
