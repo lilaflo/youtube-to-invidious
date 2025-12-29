@@ -1,16 +1,15 @@
 {
-  "manifest_version": 2,
+  "manifest_version": 3,
   "name": "YouTube to Invidious",
   "version": "1.0.0",
   "description": "If youtube blocks you, just switch to Invidious",
-  "browser_specific_settings": {
-    "gecko": {
-      "id": "{youtube-invidious@lilaflo.github.io}"
-    }
-  },
   "permissions": [
-    "storage",
-    "<all_urls>"
+    "activeTab",
+    "storage"
+  ],
+  "host_permissions": [
+    "*://*.youtube.com/*",
+    "http://localhost:5173/*"
   ],
   "content_scripts": [
     {
@@ -24,8 +23,5 @@
     "48": "icons/icon48.png",
     "128": "icons/icon128.png"
   },
-  "options_ui": {
-    "page": "src/options.html",
-    "open_in_tab": true
-  }
+  "options_page": "src/options.html"
 }

@@ -44,8 +44,21 @@ The extension will automatically reload when you make changes to the code.
 
 ### Build for Production
 
+Build for both Chrome and Firefox:
 ```bash
 pnpm build
+```
+
+This creates:
+- `dist-chrome/` - Chrome extension
+- `dist-firefox/` - Firefox extension
+- `extension-chrome.zip` - Ready for Chrome Web Store
+- `extension-firefox.zip` - Ready for Firefox Add-ons
+
+Or build individually:
+```bash
+pnpm build:chrome   # Chrome only
+pnpm build:firefox  # Firefox only
 ```
 
 ## How It Works
@@ -55,9 +68,13 @@ pnpm build
 3. Button peeks from top, slides down on hover
 4. Click → Opens video on Invidious in new tab
 
+## Browser Support
+
+- ✅ **Chrome/Chromium** - Manifest v3
+- ✅ **Firefox** - Manifest v2 with browser_specific_settings
+
 ## Future Plans
 
-- Firefox support
 - User-configurable Invidious instance selection
 - Instance health checking
 - Automatic redirection option

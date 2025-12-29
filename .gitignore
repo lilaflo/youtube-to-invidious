@@ -1,5 +1,8 @@
 node_modules/
 dist/
+dist-chrome/
+dist-firefox/
 .DS_Store
 *.log
+*.zip
 .claude/settings.local.json
