@@ -9,7 +9,7 @@
     "build": "node scripts/build.js",
     "build:chrome": "node scripts/build-chrome.js",
     "build:firefox": "node scripts/build-firefox.js",
-    "deploy:firefox": "web-ext-deploy --firefox-changelog=\"$(cat RELEASE_NOTES.md)\" --source-dir=dist-firefox",
+    "deploy:firefox": "web-ext-deploy --env",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",

@@ -7,3 +7,4 @@ coverage/
 *.log
 *.zip
 .claude/settings.local.json
+firefox.env
