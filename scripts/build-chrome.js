@@ -25,7 +25,7 @@ async function buildChrome() {
     exec('mkdir -p dist-chrome', 'Creating Chrome dist directory');
     exec('cp -r src dist-chrome/', 'Copying source files');
     exec('cp -r icons dist-chrome/', 'Copying icons');
-    exec('cp manifest.chrome.json dist-chrome/manifest.json', 'Copying Chrome manifest');
+    exec('cp manifest.json dist-chrome/', 'Copying manifest');
     exec('rm -f extension-chrome.zip', 'Cleaning old package');
     exec('cd dist-chrome && zip -r ../extension-chrome.zip *', 'Creating Chrome zip');
 
