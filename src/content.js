@@ -3,6 +3,8 @@
  * Adds floating button to YouTube iframes for quick access to Invidious
  */
 
+import { extractVideoId, isYouTubeUrl, buildInvidiousUrl } from './utils.js';
+
 const INVIDIOUS_INSTANCE = 'https://yewtu.be';
 
 // Track processed iframes
@@ -37,43 +39,6 @@ chrome.storage.onChanged.addListener((changes, namespace) => {
 });
 
 /**
- * Extract video ID from YouTube URL
- */
-function extractVideoId(url) {
-  debug('[YT2INV] Extracting video ID from URL:', url);
-  try {
-    const urlObj = new URL(url);
-
-    // Format: youtube.com/watch?v=VIDEO_ID
-    if (urlObj.searchParams.has('v')) {
-      const videoId = urlObj.searchParams.get('v');
-      debug('[YT2INV] Found video ID from query param:', videoId);
-      return videoId;
-    }
-
-    // Format: youtube.com/embed/VIDEO_ID
-    const embedMatch = urlObj.pathname.match(/\/embed\/([a-zA-Z0-9_-]+)/);
-    if (embedMatch) {
-      debug('[YT2INV] Found video ID from embed path:', embedMatch[1]);
-      return embedMatch[1];
-    }
-
-    // Format: youtu.be/VIDEO_ID
-    if (urlObj.hostname === 'youtu.be') {
-      const videoId = urlObj.pathname.slice(1).split('?')[0];
-      debug('[YT2INV] Found video ID from youtu.be:', videoId);
-      return videoId;
-    }
-
-    debug('[YT2INV] No video ID found in URL');
-  } catch (e) {
-    debug('[YT2INV] Error parsing URL:', e);
-  }
-
-  return null;
-}
-
-/**
  * Scan page for YouTube iframes
  */
 function checkYouTubeIframes() {
@@ -92,7 +57,7 @@ function checkYouTubeIframes() {
     }
 
     // Check if it's a YouTube iframe (including youtube-nocookie.com)
-    if (src && (src.includes('youtube.com') || src.includes('youtube-nocookie.com') || src.includes('youtu.be'))) {
+    if (isYouTubeUrl(src)) {
       debug(`[YT2INV] ✅ Found YouTube iframe!`);
       const videoId = extractVideoId(src);
 
@@ -213,7 +178,7 @@ function createFloatingButton(iframe, videoId) {
     e.stopPropagation();
     const videoId = button.dataset.videoId;
     debug('[YT2INV] Floating button clicked for video:', videoId);
-    const invidiousUrl = `${INVIDIOUS_INSTANCE}/watch?v=${videoId}`;
+    const invidiousUrl = buildInvidiousUrl(videoId, INVIDIOUS_INSTANCE);
     window.open(invidiousUrl, '_blank');
   });
 
