@@ -13,12 +13,7 @@
     }
   },
   "permissions": [
-    "activeTab",
     "storage"
-  ],
-  "host_permissions": [
-    "*://*.youtube.com/*",
-    "http://localhost:5173/*"
   ],
   "content_scripts": [
     {
