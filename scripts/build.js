@@ -36,7 +36,7 @@ async function build() {
     // Copy source files
     exec('cp -r src dist-chrome/', 'Copying source files');
     exec('cp -r icons dist-chrome/', 'Copying icons');
-    exec('cp manifest.chrome.json dist-chrome/manifest.json', 'Copying Chrome manifest');
+    exec('cp manifest.json dist-chrome/', 'Copying manifest');
 
     // Build Firefox version
     console.log('\n=== Building Firefox version ===');
@@ -46,7 +46,7 @@ async function build() {
     // Copy source files
     exec('cp -r src dist-firefox/', 'Copying source files');
     exec('cp -r icons dist-firefox/', 'Copying icons');
-    exec('cp manifest.firefox.json dist-firefox/manifest.json', 'Copying Firefox manifest');
+    exec('cp manifest.json dist-firefox/', 'Copying manifest');
 
     // Create zip files
     console.log('\n=== Creating distribution packages ===');

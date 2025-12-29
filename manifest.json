@@ -3,6 +3,11 @@
   "name": "YouTube to Invidious",
   "version": "1.0.0",
   "description": "If youtube blocks you, just switch to Invidious",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "youtube-invidious@lilaflo.github.io"
+    }
+  },
   "permissions": [
     "activeTab",
     "storage"

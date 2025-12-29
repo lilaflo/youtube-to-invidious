@@ -63,9 +63,9 @@ Maintain a list of public Invidious instances with fallback options. Consider:
 **Supported Browsers**: Chrome and Firefox (both use Manifest v3)
 
 **Build System**:
-- Separate manifest files: `manifest.chrome.json` and `manifest.firefox.json`
+- Single unified `manifest.json` for both browsers
 - Both browsers use Manifest v3 (modern versions only)
-- Firefox manifest includes `browser_specific_settings` with gecko ID
+- `browser_specific_settings.gecko.id` for Firefox (ignored by Chrome)
 - Build scripts in `scripts/` directory:
   - `build.js` - Builds both browsers
   - `build-chrome.js` - Chrome only
