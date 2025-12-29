@@ -14,7 +14,11 @@
   },
   "permissions": [
     "activeTab",
-    "scripting"
+    "scripting",
+    "storage"
+  ],
+  "host_permissions": [
+    "https://api.invidious.io/*"
   ],
   "action": {
     "default_icon": {
@@ -24,6 +28,13 @@
     },
     "default_title": "Scan for YouTube videos"
   },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["src/content.js"],
+      "run_at": "document_idle"
+    }
+  ],
   "background": {
     "service_worker": "src/background.js"
   },
@@ -31,5 +42,6 @@
     "16": "icons/icon16.png",
     "48": "icons/icon48.png",
     "128": "icons/icon128.png"
-  }
+  },
+  "options_page": "src/options.html"
 }

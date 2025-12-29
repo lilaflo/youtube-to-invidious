@@ -142,6 +142,20 @@
 
     <div class="setting">
       <div class="setting-info">
+        <div class="setting-title">Preferred Invidious Instance</div>
+        <div class="setting-description">Select your preferred Invidious instance for video redirects</div>
+      </div>
+    </div>
+    <div style="margin: -8px 0 16px 0;">
+      <select id="instanceSelect" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; margin-bottom: 8px;">
+        <option value="">Loading instances...</option>
+      </select>
+      <button id="testConnection" style="padding: 8px 16px; background: #ff0000; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px;">Test Connection</button>
+      <span id="instanceStatus" style="margin-left: 12px; font-size: 13px;"></span>
+    </div>
+
+    <div class="setting">
+      <div class="setting-info">
         <div class="setting-title">Debug Logging</div>
         <div class="setting-description">Show detailed console logs for troubleshooting</div>
       </div>

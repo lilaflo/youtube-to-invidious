@@ -25,6 +25,8 @@ async function buildChrome() {
     exec('mkdir -p dist/src', 'Creating dist directory');
     exec('node scripts/bundle-content.js', 'Bundling content script');
     exec('cp src/background.js dist/src/', 'Copying background script');
+    exec('cp src/options.js dist/src/', 'Copying options script');
+    exec('cp src/options.html dist/src/', 'Copying options HTML');
 
     exec('rm -rf dist-chrome', 'Cleaning Chrome distribution directory');
     exec('mkdir -p dist-chrome', 'Creating Chrome dist directory');
