@@ -9,6 +9,7 @@
     "build": "node scripts/build.js",
     "build:chrome": "node scripts/build-chrome.js",
     "build:firefox": "node scripts/build-firefox.js",
+    "deploy:firefox": "web-ext-deploy --firefox-changelog=\"$(cat RELEASE_NOTES.md)\" --source-dir=dist-firefox",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
@@ -32,6 +33,7 @@
     "jsdom": "^27.4.0",
     "vite": "^7.3.0",
     "vitest": "^4.0.16",
+    "web-ext-deploy": "^0.14.4",
     "webextension-polyfill": "^0.12.0"
   }
 }
