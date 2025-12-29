@@ -61,6 +61,19 @@ pnpm build:chrome   # Chrome only
 pnpm build:firefox  # Firefox only
 ```
 
+### Testing
+
+Run unit tests:
+```bash
+pnpm test           # Run tests once
+pnpm test:watch     # Run tests in watch mode
+pnpm test:coverage  # Run tests with coverage report
+```
+
+Tests run automatically:
+- **Pre-commit hook** - Tests run before every commit
+- **GitHub Actions CI** - Tests run on push and pull requests
+
 ## How It Works
 
 1. Scans all pages for YouTube iframes (youtube.com, youtube-nocookie.com)
