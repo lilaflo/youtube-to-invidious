@@ -25,8 +25,6 @@ async function buildFirefox() {
     exec('mkdir -p dist/src', 'Creating dist directory');
     exec('node scripts/bundle-content.js', 'Bundling content script');
     exec('cp src/background.js dist/src/', 'Copying background script');
-    exec('cp src/options.js dist/src/', 'Copying options script');
-    exec('cp src/options.html dist/src/', 'Copying options HTML');
 
     exec('rm -rf dist-firefox', 'Cleaning Firefox distribution directory');
     exec('mkdir -p dist-firefox', 'Creating Firefox dist directory');

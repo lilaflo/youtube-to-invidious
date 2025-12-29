@@ -10,61 +10,36 @@ const INVIDIOUS_INSTANCE = 'https://yewtu.be';
 // Track processed iframes
 let processedIframes = new Set();
 
-// Debug logging state
-let debugEnabled = true; // Default to true
-
-// Debug logging function
-function debug(...args) {
-  if (debugEnabled) {
-    console.debug(...args);
-  }
-}
-
 /**
  * Scan page for YouTube iframes
  */
 function checkYouTubeIframes() {
-  debug('[YT2INV] 🔍 Scanning page for YouTube iframes...');
   const iframes = document.querySelectorAll('iframe');
-  debug('[YT2INV] Found', iframes.length, 'total iframes on page');
 
-  iframes.forEach((iframe, index) => {
+  iframes.forEach((iframe) => {
     const src = iframe.src;
-    debug(`[YT2INV] Iframe ${index + 1}:`, src || '(no src)');
 
     // Skip if already processed
     if (processedIframes.has(src)) {
-      debug(`[YT2INV] Iframe ${index + 1} already processed, skipping`);
       return;
     }
 
     // Check if it's a YouTube iframe (including youtube-nocookie.com)
     if (isYouTubeUrl(src)) {
-      debug(`[YT2INV] ✅ Found YouTube iframe!`);
       const videoId = extractVideoId(src);
 
       if (videoId) {
-        debug(`[YT2INV] 🎥 YouTube iframe with video ID:`, videoId);
         processedIframes.add(src);
-
-        // Add floating button to this iframe
-        debug(`[YT2INV] Adding floating button to iframe`);
         createFloatingButton(iframe, videoId);
-      } else {
-        debug(`[YT2INV] ⚠️ YouTube iframe found but could not extract video ID`);
       }
     }
   });
-
-  debug('[YT2INV] Finished scanning iframes');
 }
 
 /**
  * Create floating button positioned relative to iframe
  */
 function createFloatingButton(iframe, videoId) {
-  debug('[YT2INV] Creating floating button for iframe');
-
   // Create a wrapper container for positioning
   const wrapper = document.createElement('div');
   wrapper.className = 'yt-inv-iframe-wrapper';
@@ -159,47 +134,29 @@ function createFloatingButton(iframe, videoId) {
   button.addEventListener('click', (e) => {
     e.stopPropagation();
     const videoId = button.dataset.videoId;
-    debug('[YT2INV] Floating button clicked for video:', videoId);
     const invidiousUrl = buildInvidiousUrl(videoId, INVIDIOUS_INSTANCE);
     window.open(invidiousUrl, '_blank');
   });
 
   wrapper.appendChild(button);
-
-  debug('[YT2INV] ✅ Floating button created for iframe');
 }
 
 
 /**
  * Initialize extension
  */
-async function init() {
-  // Load debug setting first
-  await loadDebugSetting();
-
-  debug('[YT2INV] ========================================');
-  debug('[YT2INV] 🚀 YouTube to Invidious extension STARTED');
-  debug('[YT2INV] 🌐 Current hostname:', window.location.hostname);
-  debug('[YT2INV] 📍 Current URL:', window.location.href);
-  debug('[YT2INV] 📄 Document ready state:', document.readyState);
-  debug('[YT2INV] ========================================');
-
+function init() {
   // Scan for YouTube iframes
   if (document.readyState === 'loading') {
-    debug('[YT2INV] Waiting for DOMContentLoaded before scanning iframes...');
     document.addEventListener('DOMContentLoaded', () => {
-      debug('[YT2INV] DOMContentLoaded fired, scanning for iframes');
       checkYouTubeIframes();
     });
   } else {
-    debug('[YT2INV] DOM already loaded, scanning for iframes now');
     checkYouTubeIframes();
   }
 
   // Watch for dynamically added iframes
-  debug('[YT2INV] Setting up MutationObserver for dynamic iframes');
   const observer = new MutationObserver(() => {
-    debug('[YT2INV] 🔄 DOM mutation detected, re-scanning for iframes');
     checkYouTubeIframes();
   });
 
