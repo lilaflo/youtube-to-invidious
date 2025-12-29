@@ -21,9 +21,15 @@ async function buildChrome() {
 
     console.log(`\nBuilding Chrome version ${version}...`);
 
+    // Bundle JavaScript
+    exec('mkdir -p dist/src', 'Creating dist directory');
+    exec('node scripts/bundle-content.js', 'Bundling content script');
+    exec('cp src/options.js dist/src/', 'Copying options script');
+    exec('cp src/options.html dist/src/', 'Copying options HTML');
+
     exec('rm -rf dist-chrome', 'Cleaning Chrome distribution directory');
     exec('mkdir -p dist-chrome', 'Creating Chrome dist directory');
-    exec('cp -r src dist-chrome/', 'Copying source files');
+    exec('cp -r dist/src dist-chrome/', 'Copying bundled scripts');
     exec('cp -r icons dist-chrome/', 'Copying icons');
     exec('cp manifest.json dist-chrome/', 'Copying manifest');
     exec('rm -f extension-chrome.zip', 'Cleaning old package');
