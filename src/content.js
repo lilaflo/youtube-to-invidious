@@ -20,24 +20,6 @@ function debug(...args) {
   }
 }
 
-// Load debug preference from storage
-function loadDebugSetting() {
-  return new Promise((resolve) => {
-    chrome.storage.sync.get(['debugEnabled'], (result) => {
-      debugEnabled = result.debugEnabled !== false; // Default to true
-      resolve(debugEnabled);
-    });
-  });
-}
-
-// Listen for storage changes
-chrome.storage.onChanged.addListener((changes, namespace) => {
-  if (namespace === 'sync' && changes.debugEnabled) {
-    debugEnabled = changes.debugEnabled.newValue;
-    console.log('[YT2INV] Debug logging changed to:', debugEnabled);
-  }
-});
-
 /**
  * Scan page for YouTube iframes
  */
