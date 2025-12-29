@@ -1,12 +1,24 @@
 # YouTube to Invidious Extension
 
-A Chrome browser extension that adds a floating button to YouTube videos, allowing you to open them on Invidious (yewtu.be) with one click.
+A browser extension that adds a floating button to YouTube videos, allowing you to open them on Invidious (yewtu.be) with one click.
+
+## Installation
+
+### Chrome Web Store
+Install from: [Chrome Web Store](https://chrome.google.com/webstore/detail/hinknbjekomiaomaicgpghmlnbbpenmk)
+
+Extension ID: `hinknbjekomiaomaicgpghmlnbbpenmk`
+
+### Firefox Add-ons
+Coming soon to Firefox Add-ons
 
 ## Features
 
-- **Works on any website** with YouTube videos
-- **Floating button** on each video - slides down on hover
+- **On-demand activation** - Click extension icon to scan current page
+- **Works on any website** with embedded YouTube videos
+- **Floating button** on each detected video - slides down on hover
 - **One-click access** to Invidious (yewtu.be) in new tab
+- **Privacy-focused** - Uses minimal permissions (activeTab + scripting only)
 - **Hot-reload** support for development
 
 ## Development
@@ -92,10 +104,11 @@ Set environment variables for deployment:
 
 ## How It Works
 
-1. Scans all pages for YouTube iframes (youtube.com, youtube-nocookie.com)
-2. Adds floating button at top center of each video
-3. Button peeks from top, slides down on hover
-4. Click → Opens video on Invidious in new tab
+1. Click the extension icon in your browser toolbar
+2. Extension scans the current page for YouTube iframes (youtube.com, youtube-nocookie.com)
+3. Adds floating button at top center of each detected video
+4. Button peeks from top, slides down on hover
+5. Click button → Opens video on Invidious in new tab
 
 ## Browser Support
 
