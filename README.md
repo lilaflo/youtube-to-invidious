@@ -1,13 +1,12 @@
 # YouTube to Invidious Extension
 
-A Chrome browser extension that detects when YouTube blocks videos with the "Sign in to confirm you're not a bot" error and offers to switch to Invidious (yewtu.be) to watch the video.
+A Chrome browser extension that adds a floating button to YouTube videos, allowing you to open them on Invidious (yewtu.be) with one click.
 
 ## Features
 
-- **Works on any website** with embedded YouTube videos
-- **Floating button** appears on embedded videos - slides down on hover
-- **YouTube.com**: Detects bot protection errors and offers redirect
-- **One-click access** to Invidious (yewtu.be)
+- **Works on any website** with YouTube videos
+- **Floating button** on each video - slides down on hover
+- **One-click access** to Invidious (yewtu.be) in new tab
 - **Hot-reload** support for development
 
 ## Development
@@ -51,16 +50,10 @@ pnpm build
 
 ## How It Works
 
-### On Third-Party Sites (with embedded videos)
-1. Scans page for YouTube iframes (youtube.com, youtube-nocookie.com)
+1. Scans all pages for YouTube iframes (youtube.com, youtube-nocookie.com)
 2. Adds floating button at top center of each video
 3. Button peeks from top, slides down on hover
 4. Click → Opens video on Invidious in new tab
-
-### On YouTube.com
-1. Detects "Sign in to confirm you're not a bot" error
-2. Shows popup with redirect option
-3. Click → Redirects to Invidious
 
 ## Future Plans
 
