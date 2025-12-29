@@ -17,6 +17,9 @@ importers:
       vite:
         specifier: ^7.3.0
         version: 7.3.0
+      webextension-polyfill:
+        specifier: ^0.12.0
+        version: 0.12.0
 
 packages:
 
@@ -608,6 +611,9 @@ packages:
       yaml:
         optional: true
 
+  webextension-polyfill@0.12.0:
+    resolution: {integrity: sha512-97TBmpoWJEE+3nFBQ4VocyCdLKfw54rFaJ6EVQYLBCXqCIpLSZkwGgASpv4oPt9gdKCJ80RJlcmNzNn008Ag6Q==}
+
   whatwg-encoding@3.1.1:
     resolution: {integrity: sha512-6qN4hJdMwfYBtE3YBTTHhoeuUrDBPZmbQaxWAqSALV/MeEnR5z1xd8UKud2RAkFoPkmB+hli1TZSnyi84xz1vQ==}
     engines: {node: '>=18'}
@@ -1114,6 +1120,8 @@ snapshots:
       tinyglobby: 0.2.15
     optionalDependencies:
       fsevents: 2.3.3
+
+  webextension-polyfill@0.12.0: {}
 
   whatwg-encoding@3.1.1:
     dependencies:

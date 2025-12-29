@@ -10,8 +10,10 @@ Browser extension that redirects YouTube URLs to Invidious instances when YouTub
 
 This project uses **pnpm** (version 10.26.2 or compatible). Always use pnpm commands:
 - `pnpm install` - Install dependencies
-- `pnpm dev` - Start development server with hot-reload
-- `pnpm build` - Build for production
+- `pnpm dev` - Start development server with hot-reload (Chrome dev mode)
+- `pnpm build` - Build for both Chrome and Firefox
+- `pnpm build:chrome` - Build Chrome version only
+- `pnpm build:firefox` - Build Firefox version only
 - `pnpm test` - Run tests (currently not configured)
 
 ## Development Workflow
@@ -58,13 +60,14 @@ Maintain a list of public Invidious instances with fallback options. Consider:
 
 ## Cross-Browser Compatibility
 
-**Current Status**: Chrome/Chromium only (Manifest v3)
+**Supported Browsers**: Chrome (Manifest v3) and Firefox (Manifest v2)
 
-**Firefox Support (Planned)**:
-- Firefox requires separate manifest configuration (some v3 features differ)
-- Use WebExtension Polyfill for `browser.*` / `chrome.*` API compatibility
-- Test with `web-ext` tool for Firefox development
-- May need separate build targets for Chrome vs Firefox
+**Build System**:
+- Separate manifest files: `manifest.chrome.json` and `manifest.firefox.json`
+- Build script (`scripts/build.js`) creates browser-specific distributions
+- Chrome uses Manifest v3 with service workers
+- Firefox uses Manifest v2 with browser_specific_settings
+- `webextension-polyfill` installed for cross-browser API compatibility
 
 ## Testing
 
