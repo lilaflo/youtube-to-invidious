@@ -5,7 +5,11 @@
   "description": "If youtube blocks you, just switch to Invidious",
   "browser_specific_settings": {
     "gecko": {
-      "id": "youtube-invidious@lilaflo.github.io"
+      "id": "youtube-invidious@lilaflo.github.io",
+      "strict_min_version": "109.0",
+      "data_collection_permissions": {
+        "required": ["none"]
+      }
     }
   },
   "permissions": [

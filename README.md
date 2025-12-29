@@ -74,6 +74,22 @@ Tests run automatically:
 - **Pre-commit hook** - Tests run before every commit
 - **GitHub Actions CI** - Tests run on push and pull requests
 
+### Deployment
+
+Deploy to Firefox Add-ons:
+```bash
+# 1. Update RELEASE_NOTES.md with current version changes
+# 2. Build Firefox extension
+pnpm build:firefox
+
+# 3. Deploy (requires Firefox Add-ons API credentials)
+pnpm deploy:firefox
+```
+
+Set environment variables for deployment:
+- `WEB_EXT_API_KEY` - Your Firefox Add-ons JWT issuer
+- `WEB_EXT_API_SECRET` - Your Firefox Add-ons JWT secret
+
 ## How It Works
 
 1. Scans all pages for YouTube iframes (youtube.com, youtube-nocookie.com)
