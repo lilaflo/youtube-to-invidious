@@ -28,13 +28,18 @@ async function build() {
 
     console.log(`\nBuilding version ${version}...`);
 
+    // Bundle JavaScript
+    console.log('\n=== Bundling JavaScript ===');
+    exec('mkdir -p dist/src', 'Creating dist directory');
+    exec('node scripts/bundle-content.js', 'Bundling content script');
+    exec('cp src/options.js dist/src/', 'Copying options script');
+    exec('cp src/options.html dist/src/', 'Copying options HTML');
+
     // Build Chrome version
     console.log('\n=== Building Chrome version ===');
     exec('rm -rf dist-chrome', 'Cleaning Chrome distribution directory');
     exec('mkdir -p dist-chrome', 'Creating Chrome dist directory');
-
-    // Copy source files
-    exec('cp -r src dist-chrome/', 'Copying source files');
+    exec('cp -r dist/src dist-chrome/', 'Copying bundled scripts');
     exec('cp -r icons dist-chrome/', 'Copying icons');
     exec('cp manifest.json dist-chrome/', 'Copying manifest');
 
@@ -42,9 +47,7 @@ async function build() {
     console.log('\n=== Building Firefox version ===');
     exec('rm -rf dist-firefox', 'Cleaning Firefox distribution directory');
     exec('mkdir -p dist-firefox', 'Creating Firefox dist directory');
-
-    // Copy source files
-    exec('cp -r src dist-firefox/', 'Copying source files');
+    exec('cp -r dist/src dist-firefox/', 'Copying bundled scripts');
     exec('cp -r icons dist-firefox/', 'Copying icons');
     exec('cp manifest.json dist-firefox/', 'Copying manifest');
 
