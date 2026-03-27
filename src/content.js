@@ -6,6 +6,7 @@
 import {
   extractVideoId,
   isYouTubeUrl,
+  isYouTubeWatchPage,
   buildInvidiousUrl,
   getPreferredInstance,
   checkInstanceHealth,
@@ -13,8 +14,8 @@ import {
   savePreferredInstance
 } from './utils.js';
 
-// Track processed iframes
-let processedIframes = new Set();
+// Track processed iframes by element reference to avoid src-based collisions
+const processedIframes = new WeakSet();
 
 /**
  * Scan page for YouTube iframes
@@ -23,19 +24,19 @@ function checkYouTubeIframes() {
   const iframes = document.querySelectorAll('iframe');
 
   iframes.forEach((iframe) => {
-    const src = iframe.src;
-
     // Skip if already processed
-    if (processedIframes.has(src)) {
+    if (processedIframes.has(iframe)) {
       return;
     }
+
+    const src = iframe.src;
 
     // Check if it's a YouTube iframe (including youtube-nocookie.com)
     if (isYouTubeUrl(src)) {
       const videoId = extractVideoId(src);
 
       if (videoId) {
-        processedIframes.add(src);
+        processedIframes.add(iframe);
         createFloatingButton(iframe, videoId);
       }
     }
@@ -76,61 +77,14 @@ function createFloatingButton(iframe, videoId) {
   if (!document.getElementById('yt-inv-floating-styles')) {
     const style = document.createElement('style');
     style.id = 'yt-inv-floating-styles';
+    style.textContent = getFloatingStyles();
+    document.head.appendChild(style);
+  }
+
+  if (!document.getElementById('yt-inv-modal-styles')) {
+    const style = document.createElement('style');
+    style.id = 'yt-inv-modal-styles';
     style.textContent = `
-      .yt-inv-floating-btn {
-        position: absolute;
-        top: -36px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 48px;
-        height: 48px;
-        background: rgba(255, 0, 0, 0.95);
-        border-radius: 0 0 24px 24px;
-        display: flex;
-        align-items: flex-end;
-        justify-content: center;
-        padding-bottom: 4px;
-        cursor: pointer;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-        z-index: 2147483647;
-        transition: all 0.3s ease;
-      }
-
-      .yt-inv-floating-btn:hover {
-        top: 0;
-        background: rgba(204, 0, 0, 1);
-        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.6);
-      }
-
-      .yt-inv-floating-btn svg {
-        width: 24px;
-        height: 24px;
-        margin-bottom: 2px;
-      }
-
-      .yt-inv-floating-btn::after {
-        content: attr(title);
-        position: absolute;
-        top: 100%;
-        left: 50%;
-        transform: translateX(-50%);
-        margin-top: 8px;
-        background: #1a1a1a;
-        color: #fff;
-        padding: 6px 10px;
-        border-radius: 4px;
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-        font-size: 12px;
-        white-space: nowrap;
-        opacity: 0;
-        pointer-events: none;
-        transition: opacity 0.2s;
-      }
-
-      .yt-inv-floating-btn:hover::after {
-        opacity: 1;
-      }
-
       /* Instance picker modal styles */
       .yt-inv-modal-overlay {
         position: fixed;
@@ -451,27 +405,207 @@ async function handleInstanceSelection(instanceUrl, videoId, remember) {
 
 
 /**
+ * Add an Invidious button on a YouTube watch page.
+ * Placed next to the "Sign in" button inside the player error message
+ * (the "Sign in to confirm you're not a bot" overlay).
+ */
+function checkYouTubeWatchPage() {
+  const videoId = extractVideoId(window.location.href);
+  if (!videoId) {
+    console.debug('[YT2INV] Not a YouTube watch page, skipping. URL:', window.location.href);
+    return;
+  }
+
+  if (document.getElementById('yt-inv-page-btn')) {
+    console.debug('[YT2INV] Button already exists, skipping');
+    return;
+  }
+
+  const buttonsContainer = document.querySelector(
+    'yt-player-error-message-renderer #buttons'
+  );
+  if (!buttonsContainer) {
+    return;
+  }
+
+  console.debug('[YT2INV] Adding button for video:', videoId);
+
+  injectYouTubePageStyles();
+
+  const button = document.createElement('a');
+  button.id = 'yt-inv-page-btn';
+  button.className = 'yt-inv-page-btn';
+  button.dataset.videoId = videoId;
+  button.setAttribute('role', 'button');
+  button.setAttribute('aria-label', 'Open on Invidious');
+  button.innerHTML = `
+    <svg width="18" height="18" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg" style="vertical-align: middle; margin-right: 6px;">
+      <path d="M64 24L44 44L56 44L56 84L44 84L64 104L84 84L72 84L72 44L84 44L64 24Z" fill="currentColor"/>
+      <circle cx="34" cy="64" r="6" fill="currentColor"/>
+      <circle cx="94" cy="64" r="6" fill="currentColor"/>
+    </svg>Watch on Invidious
+  `;
+
+  button.addEventListener('click', async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const vid = button.dataset.videoId;
+    const preferredInstance = await getPreferredInstance();
+    const isHealthy = await checkInstanceHealth(preferredInstance);
+    if (isHealthy) {
+      window.open(buildInvidiousUrl(vid, preferredInstance), '_blank');
+    } else {
+      showInstancePickerModal(vid, preferredInstance);
+    }
+  });
+
+  buttonsContainer.appendChild(button);
+}
+
+function injectYouTubePageStyles() {
+  if (document.getElementById('yt-inv-page-btn-styles')) return;
+
+  const style = document.createElement('style');
+  style.id = 'yt-inv-page-btn-styles';
+  style.textContent = `
+    .yt-inv-page-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 16px;
+      height: 36px;
+      margin-left: 12px;
+      border-radius: 18px;
+      background: #cc0000;
+      color: #fff;
+      font-family: 'Roboto', 'Arial', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      text-decoration: none;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.2s;
+    }
+
+    .yt-inv-page-btn:hover {
+      background: #ff0000;
+    }
+  `;
+  document.head.appendChild(style);
+}
+
+/**
+ * Extract shared floating button CSS into a reusable function
+ * @returns {string} CSS string
+ */
+function getFloatingStyles() {
+  return `
+    .yt-inv-floating-btn {
+      position: absolute;
+      top: -36px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 48px;
+      height: 48px;
+      background: rgba(255, 0, 0, 0.95);
+      border-radius: 0 0 24px 24px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding-bottom: 4px;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+      z-index: 2147483647;
+      transition: all 0.3s ease;
+    }
+
+    .yt-inv-floating-btn:hover {
+      top: 0;
+      background: rgba(204, 0, 0, 1);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.6);
+    }
+
+    .yt-inv-floating-btn svg {
+      width: 24px;
+      height: 24px;
+      margin-bottom: 2px;
+    }
+
+    .yt-inv-floating-btn::after {
+      content: attr(title);
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      margin-top: 8px;
+      background: #1a1a1a;
+      color: #fff;
+      padding: 6px 10px;
+      border-radius: 4px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-size: 12px;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s;
+    }
+
+    .yt-inv-floating-btn:hover::after {
+      opacity: 1;
+    }
+  `;
+}
+
+/**
  * Initialize extension
  */
 function init() {
-  // Scan for YouTube iframes
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-      checkYouTubeIframes();
-    });
-  } else {
+  console.debug('[YT2INV] Extension initializing, state:', document.readyState);
+  
+  const run = () => {
+    console.debug('[YT2INV] Running checks, URL:', window.location.href);
+    // Handle direct YouTube watch page visits
+    if (isYouTubeWatchPage(window.location.href)) {
+      console.debug('[YT2INV] Detected YouTube watch page');
+      checkYouTubeWatchPage();
+    }
+
+    // Handle YouTube iframes on other sites
     checkYouTubeIframes();
+  };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', run);
+  } else {
+    run();
   }
 
-  // Watch for dynamically added iframes
+  // Watch for dynamically added/changed iframes and YouTube SPA navigation
   const observer = new MutationObserver(() => {
     checkYouTubeIframes();
+    if (isYouTubeWatchPage(window.location.href)) {
+      checkYouTubeWatchPage();
+    }
   });
 
   observer.observe(document.body, {
     childList: true,
     subtree: true,
+    attributes: true,
+    attributeFilter: ['src'],
   });
+
+  // Handle YouTube SPA navigation (pushState/replaceState/popstate)
+  const onNavigate = () => {
+    // Remove old page button so it can be re-added for the new video
+    const old = document.getElementById('yt-inv-page-btn');
+    if (old) old.remove();
+    // Re-run after a short delay to let YouTube render the new page
+    setTimeout(run, 500);
+  };
+
+  window.addEventListener('yt-navigate-finish', onNavigate);
+  window.addEventListener('popstate', onNavigate);
 }
 
 init();
