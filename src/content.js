@@ -54,6 +54,7 @@ function createFloatingButton(iframe, videoId) {
   wrapper.style.display = 'inline-block';
   wrapper.style.width = '100%';
   wrapper.style.height = '100%';
+  wrapper.style.overflow = 'hidden';
 
   // Wrap the iframe
   if (iframe.parentNode) {
