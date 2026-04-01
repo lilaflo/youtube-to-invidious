@@ -47,6 +47,22 @@ export function isYouTubeUrl(url) {
 }
 
 /**
+ * Check if URL is a YouTube watch page (direct visit, not an embed)
+ * @param {string} url - URL to check
+ * @returns {boolean} - True if on a YouTube watch page
+ */
+export function isYouTubeWatchPage(url) {
+  if (!url) return false;
+  try {
+    const urlObj = new URL(url);
+    const isYTDomain = urlObj.hostname === 'www.youtube.com' || urlObj.hostname === 'youtube.com';
+    return isYTDomain && urlObj.pathname === '/watch' && urlObj.searchParams.has('v');
+  } catch (e) {
+    return false;
+  }
+}
+
+/**
  * Build Invidious URL from video ID
  * @param {string} videoId - YouTube video ID
  * @param {string} instance - Invidious instance URL

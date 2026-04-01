@@ -12,9 +12,10 @@ const utilsFunctions = utilsCode
   .replace(/export /g, '') // Remove export keywords
   .trim();
 
-// Remove the import statement from content.js
+// Remove the import statement from content.js - handles multi-line imports
 const contentWithoutImport = contentCode
-  .replace(/^import .+from .+$/gm, '') // Remove import statements
+  .replace(/^import\s*\{[^}]*\}\s*from\s*['"].+['"];\s*$/gm, '') // Remove import statements
+  .replace(/^import .+$/gm, '') // Remove any remaining import lines
   .trim();
 
 // Combine: utilities first, then content script

@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "YouTube to Invidious",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "If youtube blocks you, just switch to Invidious",
   "browser_specific_settings": {
     "gecko": {
@@ -18,7 +18,8 @@
     "storage"
   ],
   "host_permissions": [
-    "https://api.invidious.io/*"
+    "https://api.invidious.io/*",
+    "https://*/*"
   ],
   "action": {
     "default_icon": {

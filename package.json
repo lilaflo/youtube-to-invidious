@@ -1,6 +1,6 @@
 {
   "name": "youtube-to-invidious",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "If youtube blocks you, just switch to invidous",
   "type": "module",
   "main": "index.js",
@@ -25,13 +25,13 @@
   "packageManager": "pnpm@10.26.2",
   "devDependencies": {
     "@testing-library/dom": "^10.4.1",
-    "@types/chrome": "^0.1.32",
-    "@vitest/coverage-v8": "^4.0.16",
-    "@vitest/ui": "^4.0.16",
-    "happy-dom": "^20.0.11",
+    "@types/chrome": "^0.1.38",
+    "@vitest/coverage-v8": "^4.1.2",
+    "@vitest/ui": "^4.1.2",
+    "happy-dom": "^20.8.8",
     "husky": "^9.1.7",
     "jsdom": "^27.4.0",
-    "vitest": "^4.0.16",
+    "vitest": "^4.1.2",
     "web-ext-deploy": "^0.14.4",
     "webextension-polyfill": "^0.12.0"
   }

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { extractVideoId, isYouTubeUrl, buildInvidiousUrl } from '../src/utils.js';
+import { extractVideoId, isYouTubeUrl, isYouTubeWatchPage, buildInvidiousUrl } from '../src/utils.js';
 
 describe('extractVideoId', () => {
   it('should extract video ID from youtube.com/watch URL', () => {
@@ -75,6 +75,40 @@ describe('isYouTubeUrl', () => {
 
   it('should return false for empty string', () => {
     expect(isYouTubeUrl('')).toBe(false);
+  });
+});
+
+describe('isYouTubeWatchPage', () => {
+  it('should return true for a standard youtube.com/watch URL', () => {
+    expect(isYouTubeWatchPage('https://www.youtube.com/watch?v=dQw4w9WgXcQ')).toBe(true);
+  });
+
+  it('should return true for youtube.com without www', () => {
+    expect(isYouTubeWatchPage('https://youtube.com/watch?v=dQw4w9WgXcQ')).toBe(true);
+  });
+
+  it('should return false for a YouTube homepage', () => {
+    expect(isYouTubeWatchPage('https://www.youtube.com/')).toBe(false);
+  });
+
+  it('should return false for a YouTube embed URL', () => {
+    expect(isYouTubeWatchPage('https://www.youtube.com/embed/dQw4w9WgXcQ')).toBe(false);
+  });
+
+  it('should return false for a youtube.com/watch URL missing video ID', () => {
+    expect(isYouTubeWatchPage('https://www.youtube.com/watch')).toBe(false);
+  });
+
+  it('should return false for a non-YouTube URL', () => {
+    expect(isYouTubeWatchPage('https://example.com/watch?v=dQw4w9WgXcQ')).toBe(false);
+  });
+
+  it('should return false for null', () => {
+    expect(isYouTubeWatchPage(null)).toBe(false);
+  });
+
+  it('should return false for empty string', () => {
+    expect(isYouTubeWatchPage('')).toBe(false);
   });
 });
 
